@@ -1,6 +1,5 @@
 const { spawn } = require('child_process');
 const path = require('path');
-const fs = require('fs');
 
 function testHookScript(scriptPath, payload) {
   return new Promise((resolve) => {
@@ -28,7 +27,7 @@ function testHookScript(scriptPath, payload) {
 
 async function main() {
   console.log("=========================================");
-  console.log("🔬 MATRIZ DE PRUEBA DIFERENCIAL DE HOOKS");
+  console.log("🧪 VERIFICACIÓN SCRIPT DIFERENCIAL LOCAL");
   console.log("=========================================");
 
   const workspaceHook = path.join(__dirname, 'workspace-hook.js');
@@ -37,13 +36,8 @@ async function main() {
   const resWorkspace = await testHookScript(workspaceHook, { hook: 'preToolUse', tool_name: 'Bash' });
   const resGlobal = await testHookScript(globalHook, { hook: 'preToolUse', tool_name: 'Bash' });
 
-  console.log(`\n1. Workspace Hook Response: Code=${resWorkspace.code}, Reason=${resWorkspace.reason}`);
-  console.log(`2. Global Hook Response: Code=${resGlobal.code}, Reason=${resGlobal.reason}`);
-
-  console.log("\nDOCUMENTACIÓN OFICIAL CONFIRMADA:");
-  console.log("- Proyectos (.cursor/hooks.json): Hooks específicos de repositorio.");
-  console.log("- Usuario (~/.cursor/hooks.json): Hooks globales de preferencias.");
-  console.log("- Ejecución Aditiva: Cursor ejecuta ambos de forma combinada.");
+  console.log(`1. Workspace Script Output: Code=${resWorkspace.code}, Reason=${resWorkspace.reason}`);
+  console.log(`2. Global Script Output: Code=${resGlobal.code}, Reason=${resGlobal.reason}`);
 }
 
 main();

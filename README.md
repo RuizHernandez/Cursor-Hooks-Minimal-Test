@@ -19,6 +19,9 @@ This repository provides a clean, minimal, reproducible test environment for **C
 │       ├── pre-tool-use.js             # Fail-closed Node.js hook executor (production grade)
 │       ├── test-hook-runner.js         # Automated simulation test runner (allow & deny cases)
 │       ├── test-critical-bugs.js       # Diagnostic test suite for edge cases & timeouts
+│       ├── test-differential-runner.js # Local process execution test runner
+│       ├── workspace-hook.js           # Differential test script (workspace level)
+│       ├── global-hook.js              # Differential test script (user level)
 │       └── hooks.log                   # Dynamic audit trail log (generated dynamically)
 ├── HOOKS-SECURITY-REVIEW.md            # Multi-agent security review report (by Claude Code Sonnet 5)
 ├── README-HOOKS.md                     # Detailed hook configuration & lifecycle documentation
@@ -57,12 +60,11 @@ node .cursor/hooks/test-critical-bugs.js
    - Cursor enforces a 10-second external timeout on hook processes (`hooks.json`).
    - The hook script implements an **internal `stdin` timeout of 5 seconds**. If a stream stalls, it aborts proactively and emits an explicit `deny` decision **before** Cursor's process killer triggers.
 
-3. **OS & Portable Execution**:
-   - Configured in `.cursor/hooks.json` using `node .cursor/hooks/pre-tool-use.js` for portable execution across platforms.
+3. **Layered Configuration Resolution**:
+   - Cursor evaluates hooks across 4 additive layers: **Enterprise** (`C:\ProgramData\Cursor\hooks.json` on Windows / `/etc/cursor/hooks.json` on Linux) → **Team** → **Project** (`.cursor/hooks.json`) → **User** (`~/.cursor/hooks.json`).
 
-4. **IDE vs CLI Runtime Resolution (Empirical Observation)**:
-   - **Cursor IDE (GUI Desktop)**: Resolves `.cursor/hooks.json` from the workspace root.
-   - **Cursor CLI (`agent-cli` / DevSwarm)**: Resolves global hooks from `~/.cursor/hooks.json` alongside `permissions.deny`.
+4. **Stream Buffer Cap (5MB)**:
+   - Defensively capping the incoming `stdin` buffer at 5MB prevents memory exhaustion from runaway payloads while maintaining fast stream parsing.
 
 ---
 
