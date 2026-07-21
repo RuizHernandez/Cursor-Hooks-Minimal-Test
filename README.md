@@ -2,6 +2,7 @@
 
 [![Cursor Hooks](https://img.shields.io/badge/Cursor-Hooks_preToolUse-purple.svg)](https://cursor.com)
 [![Node.js](https://img.shields.io/badge/Node.js-v24.x-green.svg)](https://nodejs.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Security](https://img.shields.io/badge/Security-Fail--Closed-red.svg)](#-key-security-highlights)
 
 This repository provides a clean, minimal, reproducible test environment for **Cursor Hooks (`preToolUse`)** built in accordance with Cursor engineering recommendations and multi-agent swarm security reviews.
@@ -11,17 +12,18 @@ This repository provides a clean, minimal, reproducible test environment for **C
 ## 📁 Repository Architecture
 
 ```text
-C:\LabCursorTest\
+.
 ├── .cursor/
-│   ├── hooks.json                      # Cursor hooks definition (Windows cmd /c compatible)
+│   ├── hooks.json                      # Cursor hooks definition (portable Node.js command)
 │   └── hooks/
 │       ├── pre-tool-use.js             # Fail-closed Node.js hook executor (production grade)
 │       ├── test-hook-runner.js         # Automated simulation test runner (allow & deny cases)
 │       ├── test-critical-bugs.js       # Diagnostic test suite for edge cases & timeouts
-│       └── hooks.log                   # Dynamic audit trail log
+│       └── hooks.log                   # Dynamic audit trail log (generated dynamically)
 ├── HOOKS-SECURITY-REVIEW.md            # Multi-agent security review report (by Claude Code Sonnet 5)
 ├── README-HOOKS.md                     # Detailed hook configuration & lifecycle documentation
 ├── README.md                           # Main repository documentation
+├── LICENSE                             # MIT License
 └── memory/                             # Session logs and governance documentation
 ```
 
@@ -55,12 +57,12 @@ node .cursor/hooks/test-critical-bugs.js
    - Cursor enforces a 10-second external timeout on hook processes (`hooks.json`).
    - The hook script implements an **internal `stdin` timeout of 5 seconds**. If a stream stalls, it aborts proactively and emits an explicit `deny` decision **before** Cursor's process killer triggers.
 
-3. **OS-Specific Execution (Windows)**:
-   - Configured in `.cursor/hooks.json` using `cmd /c node` to ensure reliable background process spawner execution across both Cursor Desktop IDE (GUI) and Cursor CLI (`agent-cli`).
+3. **OS & Portable Execution**:
+   - Configured in `.cursor/hooks.json` using `node .cursor/hooks/pre-tool-use.js` for portable execution across platforms.
 
-4. **IDE vs CLI Runtime Resolution**:
+4. **IDE vs CLI Runtime Resolution (Empirical Observation)**:
    - **Cursor IDE (GUI Desktop)**: Resolves `.cursor/hooks.json` from the workspace root.
-   - **Cursor CLI (`agent-cli` / DevSwarm)**: Resolves global hooks from `~/.cursor/hooks.json` and evaluates `permissions.deny`.
+   - **Cursor CLI (`agent-cli` / DevSwarm)**: Resolves global hooks from `~/.cursor/hooks.json` alongside `permissions.deny`.
 
 ---
 
@@ -73,4 +75,4 @@ node .cursor/hooks/test-critical-bugs.js
 
 ## 📄 License
 
-MIT License. Designed for AI safety research and workspace security testing.
+[MIT License](LICENSE). Designed for AI safety research and workspace security testing.
