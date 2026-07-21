@@ -1,0 +1,76 @@
+# 🪝 Cursor Hooks (`preToolUse`) Minimal Test Environment & Fail-Closed Security Reference
+
+[![Cursor Hooks](https://img.shields.io/badge/Cursor-Hooks_preToolUse-purple.svg)](https://cursor.com)
+[![Node.js](https://img.shields.io/badge/Node.js-v24.x-green.svg)](https://nodejs.org)
+[![Security](https://img.shields.io/badge/Security-Fail--Closed-red.svg)](#-key-security-highlights)
+
+This repository provides a clean, minimal, reproducible test environment for **Cursor Hooks (`preToolUse`)** built in accordance with Cursor engineering recommendations and multi-agent swarm security reviews.
+
+---
+
+## 📁 Repository Architecture
+
+```text
+C:\LabCursorTest\
+├── .cursor/
+│   ├── hooks.json                      # Cursor hooks definition (Windows cmd /c compatible)
+│   └── hooks/
+│       ├── pre-tool-use.js             # Fail-closed Node.js hook executor (production grade)
+│       ├── test-hook-runner.js         # Automated simulation test runner (allow & deny cases)
+│       ├── test-critical-bugs.js       # Diagnostic test suite for edge cases & timeouts
+│       └── hooks.log                   # Dynamic audit trail log
+├── HOOKS-SECURITY-REVIEW.md            # Multi-agent security review report (by Claude Code Sonnet 5)
+├── README-HOOKS.md                     # Detailed hook configuration & lifecycle documentation
+├── README.md                           # Main repository documentation
+└── memory/                             # Session logs and governance documentation
+```
+
+---
+
+## ⚡ Quickstart & Testing
+
+To run the automated verification test suite locally:
+
+```bash
+# 1. Run basic allow/deny hook verification
+node .cursor/hooks/test-hook-runner.js
+
+# 2. Run critical edge-case & timeout diagnostic suite
+node .cursor/hooks/test-critical-bugs.js
+```
+
+### Expected Output:
+- **Allowed Tool Calls**: Exits with code `0` (`{"permission": "allow"}`)
+- **Prohibited Tool Calls**: Exits with code `2` (`{"permission": "deny", "reason": "..."}`)
+
+---
+
+## 🛡️ Key Security & Architectural Highlights
+
+1. **Strict Fail-Closed Design (`Exit Code 2`)**:
+   - All unhandled exceptions, malformed JSON payloads, empty `stdin` streams, and prohibited arguments route through exit code `2`.
+   - Prevents silent fallback (*fail-open*) if an unexpected error occurs during hook evaluation.
+
+2. **Internal Timeout vs External Timeout (5s vs 10s)**:
+   - Cursor enforces a 10-second external timeout on hook processes (`hooks.json`).
+   - The hook script implements an **internal `stdin` timeout of 5 seconds**. If a stream stalls, it aborts proactively and emits an explicit `deny` decision **before** Cursor's process killer triggers.
+
+3. **OS-Specific Execution (Windows)**:
+   - Configured in `.cursor/hooks.json` using `cmd /c node` to ensure reliable background process spawner execution across both Cursor Desktop IDE (GUI) and Cursor CLI (`agent-cli`).
+
+4. **IDE vs CLI Runtime Resolution**:
+   - **Cursor IDE (GUI Desktop)**: Resolves `.cursor/hooks.json` from the workspace root.
+   - **Cursor CLI (`agent-cli` / DevSwarm)**: Resolves global hooks from `~/.cursor/hooks.json` and evaluates `permissions.deny`.
+
+---
+
+## 📜 Documentation & Reports
+
+- **Security Review Report**: See [`HOOKS-SECURITY-REVIEW.md`](HOOKS-SECURITY-REVIEW.md) for full vulnerability analysis and mitigation details.
+- **Hook Reference Guide**: See [`README-HOOKS.md`](README-HOOKS.md) for payload schemas and Cursor output panel debugging tips.
+
+---
+
+## 📄 License
+
+MIT License. Designed for AI safety research and workspace security testing.
