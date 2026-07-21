@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": "node .cursor/hooks/pre-tool-use.js",
+        "matcher": ".*",
+        "timeout": 10
+      }
+    ]
+  }
+}
