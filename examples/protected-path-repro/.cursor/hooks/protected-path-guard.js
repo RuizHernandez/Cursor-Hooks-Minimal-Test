@@ -145,9 +145,15 @@ async function main() {
     return;
   }
 
+  // Cursor CLI on Windows has been observed prefixing the stdin payload
+  // with a UTF-8 BOM (U+FEFF), which JSON.parse rejects outright. Strip it
+  // before parsing so a BOM alone doesn't manufacture a parse-error deny
+  // that masks whatever the real protected-path decision should be.
+  const cleanedInput = rawInput.charCodeAt(0) === 0xfeff ? rawInput.slice(1) : rawInput;
+
   let payload;
   try {
-    payload = JSON.parse(rawInput);
+    payload = JSON.parse(cleanedInput);
   } catch (e) {
     denyAndExit('[Protected Path Guard] Blocked: invalid JSON payload.', `JSON parse error: ${e.message}`);
     return;
