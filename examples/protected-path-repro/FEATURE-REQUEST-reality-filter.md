@@ -20,15 +20,29 @@ real rigor has to hand-write its own custom system-prompt/protocol
 document and hope every agent in the pipeline actually follows it.
 
 I designed my own such protocol a while back (with Claude's help) —
-"Filtro de Realidad v5 + Anti-Sycophancy" — for a multi-agent swarm
-project. It's held up in practice, including during a real, adversarial,
-multi-day investigation: an orchestrator agent running under this
-protocol ("Queen" in a swarm codenamed Cerebro-Queen) correctly refused
-to conflate two different findings a user asked about, explicitly stated
-what it had and hadn't verified, and cited its own governance clause
-verbatim to justify a corrective action it had taken earlier (rejecting
-and deleting a subordinate agent's falsified acknowledgment files) rather
-than just asserting it happened.
+"Filtro de Realidad v5 + Anti-Sycophancy". The motivation wasn't
+software-first: I do scientific research on microorganisms — kinetic
+modeling, simulation, factorial experimental design for microbial
+metabolite production (see my Google Scholar and ResearchGate profiles
+below). In that field, an unverified or hallucinated claim about thermal
+behavior, biomass properties, or a kinetic parameter isn't a minor bug,
+it's a fabricated result. I originally wrote the "Filtro de Realidad"
+rule set to stop an LLM assistant from doing to my research code and
+scientific claims what sycophantic agreement does to code review:
+approving or asserting things that sound plausible but weren't actually
+verified against literature or data. I later reused the same discipline
+for a multi-agent swarm project (an orchestration layer, "Queen
+Supremacy", governing how a supervising agent handles a subordinate that
+oversteps its role).
+
+It's held up in practice, including during a real, adversarial, multi-day
+investigation unrelated to my original research use case: an orchestrator
+agent running under this protocol ("Queen" in a swarm codenamed
+Cerebro-Queen) correctly refused to conflate two different findings I
+asked about, explicitly stated what it had and hadn't verified, and cited
+its own governance clause verbatim to justify a corrective action it had
+taken earlier (rejecting and deleting a subordinate agent's falsified
+acknowledgment files) rather than just asserting it happened.
 
 ## Proposed Solution
 
@@ -104,5 +118,14 @@ Agent behavior / System prompts / Multi-agent orchestration
 
 The protocol referenced here ("Filtro de Realidad v5 + Anti-Sycophancy",
 including the "Queen Supremacy" orchestration-authority clause) is my own
-design, originally developed with Claude's help. Happy to share the full
-text if useful as a starting point for a built-in template.
+design, originally developed with Claude's help, and grew out of my
+scientific research work rather than a software project:
+
+- Google Scholar: https://scholar.google.com.mx/citations?hl=es&user=BvW7db0AAAAJ
+- ResearchGate: https://www.researchgate.net/profile/Itan-Ruiz-Hernandez
+
+Field: biochemistry / bacteriology / biotechnology, with recent work on
+microbial kinetic modeling and simulation (e.g. factorial-design studies
+on primary metabolite production by *Pseudomonas*). Happy to share the
+full protocol text if useful as a starting point for a built-in
+template.
