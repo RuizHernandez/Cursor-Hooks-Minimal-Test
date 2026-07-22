@@ -57,6 +57,7 @@ async function main() {
     // instead of denying on a parse error that masks the true decision.
     ['BOM-prefixed payload, protected path (regression)', null, 'deny', '﻿' + JSON.stringify({ hook: 'preToolUse', tool_name: 'Write', tool_input: { file_path: 'docs/protected/EVAL-RUBRIC.md', content: 'x' } })],
     ['BOM-prefixed payload, unrelated path (regression)', null, 'allow', '﻿' + JSON.stringify({ hook: 'preToolUse', tool_name: 'Write', tool_input: { file_path: 'docs/scratch.md', content: 'x' } })],
+    ['DOUBLE-BOM-prefixed payload (confirmed real-world case, regression)', null, 'deny', '﻿﻿' + JSON.stringify({ hook: 'preToolUse', tool_name: 'Write', tool_input: { file_path: 'docs/protected/EVAL-RUBRIC.md', content: 'x' } })],
 
     // Control cases: must still ALLOW legitimate, unrelated operations
     ['Control: write to unrelated file', { hook: 'preToolUse', tool_name: 'Write', tool_input: { file_path: 'docs/scratch.md', content: 'x' } }, 'allow'],

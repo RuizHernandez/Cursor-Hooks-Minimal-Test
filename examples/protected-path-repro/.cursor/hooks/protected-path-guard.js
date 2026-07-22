@@ -146,10 +146,11 @@ async function main() {
   }
 
   // Cursor CLI on Windows has been observed prefixing the stdin payload
-  // with a UTF-8 BOM (U+FEFF), which JSON.parse rejects outright. Strip it
-  // before parsing so a BOM alone doesn't manufacture a parse-error deny
-  // that masks whatever the real protected-path decision should be.
-  const cleanedInput = rawInput.charCodeAt(0) === 0xfeff ? rawInput.slice(1) : rawInput;
+  // with one or more UTF-8 BOMs (U+FEFF) -- two in the confirmed case --
+  // which JSON.parse rejects outright. Strip ALL leading BOMs before
+  // parsing so this doesn't manufacture a parse-error deny that masks
+  // whatever the real protected-path decision should be.
+  const cleanedInput = rawInput.replace(/^﻿+/, '');
 
   let payload;
   try {
