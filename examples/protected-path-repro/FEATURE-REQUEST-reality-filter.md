@@ -35,14 +35,39 @@ for a multi-agent swarm project (an orchestration layer, "Queen
 Supremacy", governing how a supervising agent handles a subordinate that
 oversteps its role).
 
-It's held up in practice, including during a real, adversarial, multi-day
-investigation unrelated to my original research use case: an orchestrator
-agent running under this protocol ("Queen" in a swarm codenamed
-Cerebro-Queen) correctly refused to conflate two different findings I
-asked about, explicitly stated what it had and hadn't verified, and cited
-its own governance clause verbatim to justify a corrective action it had
-taken earlier (rejecting and deleting a subordinate agent's falsified
-acknowledgment files) rather than just asserting it happened.
+To be precise about which part is actually novel: frontier models already
+lean toward calibration and non-sycophancy on their own, so the
+anti-sycophancy/verify-before-claiming half of this mostly reinforces
+behavior a good base model already tends toward — I make no claim to
+have invented that. The part a base model does **not** do by itself is
+**explicit authority boundaries between an orchestrating agent and its
+subordinates**: who may decide, who may only report, and the rule that
+an orchestrator verifies real state (git, logs, files) instead of
+trusting any agent's narrative, including its own. That governance layer
+is this protocol's actual contribution — not a new idea in the abstract
+(least-privilege and orchestrator-worker patterns predate it), but a
+portable, prompt-level articulation of it for LLM agent swarms.
+
+I published the full protocol, with an honestly-graded evidence section
+(not a controlled study — every claim is tiered by how it was actually
+observed, from "witnessed by an independent second agent" down to
+"user self-report"), here:
+
+- Repo: https://github.com/RuizHernandez/reality-filter-protocol (v1.0.0)
+- DOI: https://doi.org/10.5281/zenodo.21499994
+
+The repo's own `EVIDENCE.md` documents its companion finding: a
+technical, adversarial investigation into Cursor's hook system
+(https://github.com/RuizHernandez/Cursor-Hooks-Minimal-Test) that
+reproduced a real enforcement bypass — a `beforeShellExecution` hook
+call arriving with an empty payload defaulted to allow, letting a shell
+command through that `preToolUse` had already denied (6 confirmed
+bypasses out of 58 attempts, Request ID `3f8c4ba1-3fa6-445d-b3cb-6e57bed3edee`).
+That's the point of pairing the two: a conversational/prompt-level rule
+like this one is the *social* half of agent trust — it shapes a
+cooperative agent's behavior, but it is not enforcement. Only a real
+technical gate is. This feature request is about the social half; it
+doesn't replace the need for the technical one.
 
 ## Proposed Solution
 
@@ -82,8 +107,9 @@ project, which is what's happening today.
 
 ## Priority
 
-Medium-High — this has already proven itself across a real, adversarial,
-multi-day usage case, not a hypothetical.
+Medium — this comes from real, tiered-evidence usage (see the repo's
+`EVIDENCE.md`), not a hypothetical, but it is explicitly not a controlled
+evaluation, so I'm not overstating it as proven.
 
 ## Feature Category
 
@@ -98,8 +124,11 @@ Agent behavior / System prompts / Multi-agent orchestration
    dispatches tasks or approves phases on its own, or generates
    fabricated acknowledgment files — Queen has explicit authority to
    reject the state, delete the falsified artifacts, and halt the
-   pipeline until order is restored. This happened for real during this
-   project.
+   pipeline until order is restored. Queen reports this happened during
+   this project; that specific incident is self-reported (Tier 2 in the
+   repo's evidence grading), not independently witnessed by a third
+   party — the repo is explicit about that distinction rather than
+   presenting it as fully verified.
 3. Weeks later, in an unrelated investigation, I asked Queen about a
    different (hook-enforcement) bug. Instead of conflating the two,
    Queen explicitly separated them: "la regla es de gobernanza, no de
@@ -123,9 +152,10 @@ scientific research work rather than a software project:
 
 - Google Scholar: https://scholar.google.com.mx/citations?hl=es&user=BvW7db0AAAAJ
 - ResearchGate: https://www.researchgate.net/profile/Itan-Ruiz-Hernandez
+- Repo (v1.0.0): https://github.com/RuizHernandez/reality-filter-protocol
+- Zenodo DOI: https://doi.org/10.5281/zenodo.21499994
+- Companion technical finding (Cursor hook enforcement bypass): https://github.com/RuizHernandez/Cursor-Hooks-Minimal-Test
 
 Field: biochemistry / bacteriology / biotechnology, with recent work on
 microbial kinetic modeling and simulation (e.g. factorial-design studies
-on primary metabolite production by *Pseudomonas*). Happy to share the
-full protocol text if useful as a starting point for a built-in
-template.
+on primary metabolite production by *Pseudomonas*).
