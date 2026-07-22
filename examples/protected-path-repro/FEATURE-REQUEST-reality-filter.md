@@ -118,7 +118,7 @@ propagates into everything downstream.
 
 ## Feature Category
 
-Agent behavior / System prompts / Multi-agent orchestration
+Configuration and settings
 
 ## Use Case Example
 
