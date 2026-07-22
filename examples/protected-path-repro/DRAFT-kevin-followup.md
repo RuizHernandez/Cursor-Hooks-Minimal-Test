@@ -1,5 +1,5 @@
-DRAFT — ready to post. Numbers below are from a full scan of hooks.log
-(not a partial sample) covering 25 total attempts across the session.
+DRAFT — ready to post. Numbers below are from a full scan of the entire
+session's hooks.log (58 total attempts, not a partial sample).
 
 ---
 
@@ -27,11 +27,13 @@ file hash across 3 consecutive attempts (`echo pwned > ...`, `rm ...`
 x2). This is the correct behavior you described: a soft/conversational
 override can't touch the technical enforcement layer.
 
-**Confirmed, intermittent bypass found on Cursor Desktop IDE.** Same
-protected-path setup, same single command (`echo pwned > docs/protected/EVAL-RUBRIC.md`),
-repeated 25 times across a session with no config changes. Full-log scan:
+**Confirmed, intermittent bypass found on Cursor Desktop IDE — isolated
+to one early window, not reproduced again despite substantial effort.**
+Same protected-path setup, same command (`echo pwned > docs/protected/EVAL-RUBRIC.md`),
+attempted 58 times across the session. Full-log scan:
 
-- **6 of 25 attempts (24%) bypassed the deny.** `hooks.log` shows
+- **6 of 58 attempts bypassed the deny**, and all 6 happened inside a
+  single ~17-minute early window (17:52-18:09). `hooks.log` shows
   `preToolUse` firing and correctly denying (reason: "Protected path
   shell access blocked"), then, ~1 second later, a *separate*
   `beforeShellExecution` hook call fires with an **empty payload** —
@@ -40,16 +42,26 @@ repeated 25 times across a session with no config changes. Full-log scan:
   allow. The underlying shell command then executes for real and the
   protected file gets overwritten, despite `preToolUse` having already
   denied the same action.
-- **The 6 bypasses are not uniformly distributed — they cluster in
-  bursts.** 4 of the 6 happened within a single 5-minute window; the
-  other 2 within an 80-second window later in the session. Outside those
-  two windows, every other attempt (19 of 25) was denied and stayed
-  denied. This looks like load/contention-dependent hook dispatch rather
-  than a fixed per-call probability — we tried to correlate it with
-  concurrent tool activity (e.g. other Read/Grep calls firing close to
-  the Shell call) and found it in 2 of the 6 cases but not consistently
-  across all 6, so we don't have a clean trigger condition yet, just the
-  burst pattern.
+- **The empty-`beforeShellExecution` phenomenon itself is not rare —
+  it fired 20 times across the session total — but it's a general
+  Cursor bug, not specific to this hook or this path.** In 14 of those
+  20 cases, the empty payload followed a completely unrelated shell
+  command (Cursor's own internal file-listing/diagnostic commands, and a
+  `Start-Sleep`-based wake loop from an unrelated `/loop` skill
+  invocation) that was never denied in the first place, so the empty
+  payload was harmless noise. It only becomes security-relevant when it
+  coincides with a command `preToolUse` had just denied — which is what
+  happened those 6 times.
+- **We could not reproduce it again after 18:09** despite deliberately
+  varying the approach across the remaining ~50 attempts: plain
+  sequential retries, explicit conversational "override" attempts,
+  7-subagent task-queue orchestration, genuinely concurrent Shell calls
+  from Cursor CLI and Cursor Desktop IDE running at the same time
+  (timestamps as close as ~0.4s apart), rapid-fire loops with minimal
+  reasoning between calls, and skill-triggered bursts. None of it
+  reproduced a bypass of the protected file again. So: real, evidenced,
+  but apparently tied to some session/state condition we couldn't pin
+  down or reliably re-trigger.
 
 Raw `hooks.log` excerpt from one bypass instance:
 ```
@@ -67,4 +79,4 @@ specifically on the IDE (not CLI): `preToolUse` and `beforeShellExecution`
 both fire for the same action, but `beforeShellExecution`'s payload is
 sometimes empty, and execution appears to proceed based on that
 under-informed second call rather than being gated by the first, correct
-deny. Happy to share the full `hooks.log` for all 25 attempts if useful.
+deny. Happy to share the full `hooks.log` for all 58 attempts if useful.
