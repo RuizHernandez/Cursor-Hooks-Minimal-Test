@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "deny": [
+      "Write(docs/protected/**)",
+      "Read(.env*)",
+      "Shell(rm)",
+      "Shell(sed)",
+      "Shell(dd)",
+      "Shell(truncate)"
+    ]
+  }
+}
