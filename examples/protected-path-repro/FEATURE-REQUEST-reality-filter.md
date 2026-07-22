@@ -107,9 +107,14 @@ project, which is what's happening today.
 
 ## Priority
 
-Medium — this comes from real, tiered-evidence usage (see the repo's
-`EVIDENCE.md`), not a hypothetical, but it is explicitly not a controlled
-evaluation, so I'm not overstating it as proven.
+High for my own workflow. This isn't a claim of a measured productivity
+study (see the tiered evidence in the repo's `EVIDENCE.md` — it's real
+usage, not a controlled evaluation), but a fabricated approval, a
+false accusation left uncorrected, or a governance overstep that goes
+unnoticed costs far more time to unwind after the fact than the
+discipline costs to maintain up front — especially in multi-agent
+pipelines where one bad "approved" or one silently-absorbed overstep
+propagates into everything downstream.
 
 ## Feature Category
 
